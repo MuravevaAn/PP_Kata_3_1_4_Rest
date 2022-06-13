@@ -4,7 +4,6 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -35,26 +34,42 @@ public class AdminController {
     }
 
     @PostMapping("/admin/users")
-    public String creat(@ModelAttribute("user") User user) {
-        userService.addUser(user);
+    public String creat(@ModelAttribute("user") User user, @RequestParam(value = "index", required = false) Long[] identifiers) {
+        if (identifiers != null) {
+            for (Long roleId : identifiers) {
+                user.addRole(roleService.findRoleById(roleId));
+            }
+        } else {
+            user.addRole(roleService.findRoleById(2L));
+        }
+        userService.saveUser(user);
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.show(id));
-        return "/edit";
+    @GetMapping("/admin/users/{id}/edit")
+    public String edit(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("allRoles", roleService.getAllRoles());
+        model.addAttribute("user", userService.getById(id));
+        return "edit";
     }
 
-    @PatchMapping("/{id}")
-    public String update(@ModelAttribute("user") User user, @PathVariable("id") long id ) {
+    @PatchMapping("/admin/users/{id}")
+    public String update(@ModelAttribute("user") User user, @PathVariable("id") Long id , @RequestParam(value = "index", required = false) Long[] identifiers) {
+
+        if (identifiers != null) {
+            for (Long roleId : identifiers) {
+                user.addRole(roleService.findRoleById(roleId));
+            }
+        } else {
+            user.addRole(roleService.findRoleById(2L));
+        }
         userService.updateUser(user, id);
-        return "redirect:/";
+        return "redirect:/admin/users";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") long id) {
+    @DeleteMapping("/admin/users/{id}/delete")
+    public String delete(@PathVariable("id") Long id) {
         userService.deleteUser(id);
-        return "redirect:/";
+        return "redirect:/admin/users";
    }
 }

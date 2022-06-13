@@ -69,10 +69,10 @@ public class DataInitializer {
         user5.addRole(role1);
         user5.addRole(role2);
 
-        userService.addUser(user);
-        userService.addUser(user2);
-        userService.addUser(user3);
-        userService.addUser(user4);
-        userService.addUser(user5);
+        userService.saveUser(user);
+        userService.saveUser(user2);
+        userService.saveUser(user3);
+        userService.saveUser(user4);
+        userService.saveUser(user5);
     }
 }

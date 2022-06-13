@@ -28,11 +28,11 @@
             </span>
             </td>
             <td>
-                <form th:method="GET" th:action="@{admin/users/{id}/edit(id=${user.getId()})}">
+                <form th:method="GET" th:action="@{users/{id}/edit(id=${user.getId()})}">
                     <input type="submit" value="Edit">
                 </form>
 
-                <form th:method="DELETE" th:action="@{admin/users/{id}(id=${user.getId()})}">
+                <form th:method="DELETE" th:action="@{users/{id}/delete(id=${user.getId()})}">
                     <input type="submit" value="Delete">
                 </form>
             </td>

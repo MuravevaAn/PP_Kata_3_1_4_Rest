@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-
 import java.util.List;
-import java.util.Set;
+
 
 
 @Service
@@ -31,10 +29,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(User user) {
+    public void saveUser(User user) {
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
-        userDao.addUser(user);
+        userDao.saveUser(user);
     }
 
     @Override
@@ -44,13 +42,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User updatedUser, long id) {
+        String encryptedPassword = passwordEncoder.encode(updatedUser.getPassword());
+        updatedUser.setPassword(encryptedPassword);
         userDao.updateUser(updatedUser, id);
     }
 
 
     @Override
-    public User show(long id) {
-        return userDao.show(id);
+    public User getById(long id) {
+        return userDao.getById(id);
     }
 
 }
