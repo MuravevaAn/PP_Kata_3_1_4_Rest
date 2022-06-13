@@ -24,27 +24,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
                 //Доступ разрешен всем пользователей
                 .antMatchers("/login").permitAll()
                  //Доступ только для пользователей с ролью Админ
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                //Доступ только для пользователей с ролью юзер
-                .antMatchers("/user/**").hasRole("USER")
+                .antMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
+                .antMatchers("/**").hasAuthority("ADMIN")
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
                 //Настройка для входа в систему
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()
-                //Перенарпавление на главную страницу после успешного входа
-                .defaultSuccessUrl("/")
-                .permitAll()
                 .and()
                 .logout()
                 .permitAll()
-                .logoutSuccessUrl("/");
+                .logoutSuccessUrl("/login");
     }
     @Bean
     protected PasswordEncoder passwordEncoder() {
