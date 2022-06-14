@@ -28,13 +28,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Доступ разрешен всем пользователей
                 .antMatchers("/login").permitAll()
                  //Доступ только для пользователей с ролью Админ
-                .antMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
-                .antMatchers("/**").hasAuthority("ADMIN")
+                .antMatchers("/user").hasAnyAuthority("USER")
+                .antMatchers("/admin").hasAuthority("ADMIN")
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
                 //Настройка для входа в систему
-                .formLogin().successHandler(successUserHandler)
+                .formLogin()
+                .loginPage("/login")
+                .successHandler(successUserHandler)
+                .loginProcessingUrl("/login")
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
                 .permitAll()
                 .and()
                 .logout()
